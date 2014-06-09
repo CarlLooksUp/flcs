@@ -1,0 +1,60 @@
+# == Schema Information
+#
+# Table name: season_totals
+#
+#  id                :integer          not null, primary key
+#  player_id         :integer
+#  total_kills       :integer
+#  total_deaths      :integer
+#  total_assists     :integer
+#  total_cs          :integer
+#  total_triple_kill :integer
+#  total_quadra_kill :integer
+#  total_penta_kill  :integer
+#  total_ten_ka      :integer
+#  total_win         :integer
+#  total_baron       :integer
+#  total_dragon      :integer
+#  total_first_blood :integer
+#  total_tower       :integer
+#  total_time        :integer
+#  total_points      :float
+#  created_at        :datetime
+#  updated_at        :datetime
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  total_kills: 1
+  total_deaths: 1
+  total_assists: 1
+  total_cs: 1
+  total_triple_kill: 1
+  total_quadra_kill: 1
+  total_penta_kill: 1
+  total_ten_ka: 1
+  total_win: 1
+  total_baron: 1
+  total_dragon: 1
+  total_first_blood: 1
+  total_tower: 1
+  total_time: 1
+  total_points: 1.5
+
+two:
+  total_kills: 1
+  total_deaths: 1
+  total_assists: 1
+  total_cs: 1
+  total_triple_kill: 1
+  total_quadra_kill: 1
+  total_penta_kill: 1
+  total_ten_ka: 1
+  total_win: 1
+  total_baron: 1
+  total_dragon: 1
+  total_first_blood: 1
+  total_tower: 1
+  total_time: 1
+  total_points: 1.5

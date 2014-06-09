@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: players
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  position   :string(255)
+#  riot_id    :integer
+#  created_at :datetime
+#  updated_at :datetime
+#  team_id    :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  team: 1
+  position: MyString
+
+two:
+  name: MyString
+  team: 1
+  position: MyString

@@ -1,0 +1,75 @@
+# == Schema Information
+#
+# Table name: statlines
+#
+#  id          :integer          not null, primary key
+#  player_id   :integer
+#  season      :string(255)
+#  date        :datetime
+#  week        :integer
+#  game        :integer
+#  kills       :integer
+#  deaths      :integer
+#  assists     :integer
+#  cs          :integer
+#  triple_kill :integer
+#  quadra_kill :integer
+#  penta_kill  :integer
+#  ten_ka      :integer
+#  win         :integer
+#  baron       :integer
+#  dragon      :integer
+#  first_blood :integer
+#  tower       :integer
+#  time        :integer
+#  points      :float
+#  created_at  :datetime
+#  updated_at  :datetime
+#  opponent_id :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  player_id: 1
+  season: MyString
+  week: 1
+  game: 1
+  opponent_id: 1
+  kills: 1
+  deaths: 1
+  assists: 1
+  cs: 1
+  triple_kill: 1
+  quadra_kill: 1
+  penta_kill: 1
+  ten_ka: 1
+  win: 1
+  baron: 1
+  dragon: 1
+  first_blood: 1
+  tower: 1
+  time: 1
+  points: 1.5
+
+two:
+  player_id: 1
+  season: MyString
+  week: 1
+  game: 1
+  opponent_id: 1
+  kills: 1
+  deaths: 1
+  assists: 1
+  cs: 1
+  triple_kill: 1
+  quadra_kill: 1
+  penta_kill: 1
+  ten_ka: 1
+  win: 1
+  baron: 1
+  dragon: 1
+  first_blood: 1
+  tower: 1
+  time: 1
+  points: 1.5
