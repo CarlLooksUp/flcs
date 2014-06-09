@@ -1,0 +1,21 @@
+<h1>FLCS Points</h1>
+
+<% @positions.each do |label, pos| %>
+  <div class="row">
+    <h3><%= label %></h3>
+    <table class="table table-hover">
+      <thead>
+        <td>Name</td>
+        <td>Points</td>
+      </thead>
+      <tbody>
+        <% pos.each do |player| %>
+          <tr>
+            <td><%= player.name %></td>
+            <td><%= player.season_totals[0].total_points unless player.season_totals[0].nil? %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

@@ -113,6 +113,7 @@ namespace :api do
 
       totals.total_time = player_stats.sum(:time)
       totals.total_points = player_stats.sum(:points)
+      totals.save
     end
   end
 
