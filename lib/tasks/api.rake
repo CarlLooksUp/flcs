@@ -3,9 +3,26 @@ require 'open-uri'
 BASE_URL = "http://na.lolesports.com/api"
 def open_api_as_array(endpoint)
   f = open(BASE_URL + endpoint)
-  data = ActiveSupport::JSON.decode(f.read)
+  data = JSON.parse(f.read)
   f.close()
   data
+end
+
+def no_nulls(data)
+  if data.blank?
+    0
+  else
+    data
+  end
+end
+
+def variance(data, mean)
+  return 0 if data.count == 0
+  total_deviation = 0.0
+  data.each do |datum|
+    total_deviation += (datum - mean).abs 
+  end
+  total_deviation / data.count  
 end
 
 namespace :api do
@@ -40,15 +57,15 @@ namespace :api do
       match = stats.delete("matchId")
       lines = []
       stats.each do |teamId, team_stats|
-        player = Player.find_by riot_id: team_stats["teamId"] 
+        player = Player.find_by riot_id: no_nulls(team_stats["teamId"])
         line = Statline.find_or_initialize_by(player: player, game: game)
         line.date = date
         line.match = match
-        line.win = team_stats["matchVictory"]
-        line.baron = team_stats["baronsKilled"]
-        line.dragon = team_stats["dragonsKilled"]
-        line.first_blood = team_stats["firstBlood"]
-        line.tower = team_stats["towersKilled"]
+        line.win = no_nulls(team_stats["matchVictory"])
+        line.baron = no_nulls(team_stats["baronsKilled"])
+        line.dragon = no_nulls(team_stats["dragonsKilled"])
+        line.first_blood = no_nulls(team_stats["firstBlood"])
+        line.tower = no_nulls(team_stats["towersKilled"])
         line.points = line.calc_points
         lines << line
       end
@@ -69,19 +86,19 @@ namespace :api do
         opponents[t.player.riot_id] = t.opponent
       end
       stats.each do |playerId, player_stats|
-        player = Player.find_by riot_id: player_stats["playerId"] 
+        player = Player.find_by riot_id: no_nulls(player_stats["playerId"]) 
         line = Statline.find_or_initialize_by(player: player, game: game)
         line.date = date
         line.match = match
-        line.kills = player_stats["kills"]
-        line.deaths = player_stats["deaths"]
-        line.assists = player_stats["assists"]
+        line.kills = no_nulls(player_stats["kills"])
+        line.deaths = no_nulls(player_stats["deaths"])
+        line.assists = no_nulls(player_stats["assists"])
         line.ten_ka = line.kills + line.assists >= 10 ? 1 : 0
-        line.cs = player_stats["minionKills"]
-        line.double_kill = player_stats["doubleKills"]
-        line.triple_kill = player_stats["tripleKills"]
-        line.quadra_kill = player_stats["quadraKills"]
-        line.penta_kill = player_stats["pentaKills"]
+        line.cs = no_nulls(player_stats["minionKills"])
+        line.double_kill = no_nulls(player_stats["doubleKills"])
+        line.triple_kill = no_nulls(player_stats["tripleKills"])
+        line.quadra_kill = no_nulls(player_stats["quadraKills"])
+        line.penta_kill = no_nulls(player_stats["pentaKills"])
         line.points = line.calc_points
         line.opponent = opponents[line.player.team.riot_id]
         line.save
@@ -113,6 +130,8 @@ namespace :api do
 
       totals.total_time = player_stats.sum(:time)
       totals.total_points = player_stats.sum(:points)
+      totals.ppg = totals.total_points / player_stats.count
+      totals.variance = variance(player_stats.pluck(:points), totals.ppg) #average abs deviation
       totals.save
     end
   end

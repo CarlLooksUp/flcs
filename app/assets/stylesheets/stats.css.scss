@@ -1,3 +1,32 @@
 // Place all the styles related to the Stats controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+//
+.tier-1 {
+    background-color: #2D882D;
+}
+
+.tier-2 {
+    background-color: #55AA55;
+}
+
+.tier-3 {
+    background-color: #88CC88;
+}
+
+.tier-4 {
+    background-color: inherit;
+}
+
+.tier-5 {
+    background-color: #FFAAAA;
+}
+
+.tier-6 {
+    background-color: #D46A6A;
+}
+
+.tier-7, .tier-8 {
+    background-color: #AA3939;
+}
+
