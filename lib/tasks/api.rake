@@ -93,7 +93,7 @@ namespace :api do
         line.kills = no_nulls(player_stats["kills"])
         line.deaths = no_nulls(player_stats["deaths"])
         line.assists = no_nulls(player_stats["assists"])
-        line.ten_ka = line.kills + line.assists >= 10 ? 1 : 0
+        line.ten_ka = (line.kills >= 10 or line.assists >= 10) ? 1 : 0
         line.cs = no_nulls(player_stats["minionKills"])
         line.double_kill = no_nulls(player_stats["doubleKills"])
         line.triple_kill = no_nulls(player_stats["tripleKills"])
@@ -136,6 +136,61 @@ namespace :api do
     end
   end
 
+  desc "Identify starters/replacement level"
+  task :starters, [:teams] => :environment do |t, args|
+    players = Player.all.includes(:season_totals).to_a
+    teams = (0 .. (args.teams.to_i - 1)).to_a
+    players.sort! do |x, y|
+      xcomp = x.season_totals[0].nil? ? 0 : x.season_totals[0].total_points 
+      ycomp = y.season_totals[0].nil? ? 0 : y.season_totals[0].total_points
+      ycomp <=> xcomp
+    end
+
+    #pobelter still in here
+    positions = Hash.new { |hash, key| hash[key] = Array.new }
+    starters = positions.clone
+    backups = positions.clone
+    players.delete_if do |player|
+      if positions[player.position].count < 12
+        positions[player.position] << player
+        false
+      else
+        true #delete in place
+      end
+    end
+
+    #positional starters
+    positions.each do |label, array|
+      teams.each do |idx|
+        starters[label] << players.delete(array.delete_at(0))
+      end
+    end
+
+    #flex starters
+    teams.each do |idx|
+      player = players.delete_at(0)
+      starters[player.position] << positions[player.position].delete(player)
+    end
+
+    #flex backups
+    (teams * 3).each do |idx| 
+      player = players.delete_at(0)
+      backups[player.position] << positions[player.position].delete(player)
+    end 
+
+    positions.each do |label, array|
+      puts "--" + label + "--"
+      puts "Starters:"
+      starters[label].each do |starter|
+        puts starter.name + "\t" + starter.season_totals[0].ppg.to_s(:rounded, precision: 2)
+      end
+      puts "Backups:"
+      backups[label].each do |backup|
+        puts backup.name + "\t" + backup.season_totals[0].ppg.to_s(:rounded, precision: 2)
+      end
+    end
+  end
+  
   desc "Create seed file from db contents"
   task :build_seed => :environment do |t, args|
     #TODO
