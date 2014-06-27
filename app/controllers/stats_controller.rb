@@ -12,4 +12,12 @@ class StatsController < ApplicationController
       end
     end
   end
+
+  def player
+    @player = Player.find(params[:id])   
+  end
+
+
+  #JSON Endpoints for graph data
+  
 end

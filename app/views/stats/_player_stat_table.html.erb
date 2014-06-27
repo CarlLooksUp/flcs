@@ -1,0 +1,40 @@
+<thead> 
+  <td>Date</td>
+  <td>Opponent</td>
+  <td>Kills</td>
+  <td>Deaths</td>
+  <td>Assists</td>
+  <td>CS</td>
+  <td>Triple</td>
+  <td>Quadra</td>
+  <td>Penta</td>
+  <td>Points</td>
+</thead>
+<tbody>
+  <% player.statlines.each do |line| %>
+    <tr>
+      <td><%= line.date.to_s(:date) %></td>
+      <td><%= line.opponent.name %></td>
+      <td><%= line.kills %></td>
+      <td><%= line.deaths %></td>
+      <td><%= line.assists %></td>
+      <td><%= line.cs %></td>
+      <td><%= line.triple_kill %></td>
+      <td><%= line.quadra_kill %></td>
+      <td><%= line.penta_kill %></td>
+      <td><%= line.points %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td></td>
+    <td></td>
+    <td><%= player.season_totals[0].total_kills %></td>
+    <td><%= player.season_totals[0].total_deaths %></td>
+    <td><%= player.season_totals[0].total_assists %></td>
+    <td><%= player.season_totals[0].total_cs %></td>
+    <td><%= player.season_totals[0].total_triple_kill %></td>
+    <td><%= player.season_totals[0].total_quadra_kill %></td>
+    <td><%= player.season_totals[0].total_penta_kill %></td>
+    <td><%= player.season_totals[0].total_points %></td>
+  </tr>
+</tbody>

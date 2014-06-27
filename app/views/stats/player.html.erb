@@ -1,0 +1,18 @@
+<h1>Player Stats</h1>
+<h2><%= @player.name %></h2>
+<h3><%= @player.position %> <%= " - " + @player.team unless @player.team.blank? %></h3>
+
+<div class="row">
+  <!-- insert graph here -->
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table id="player-stats" class="table table-hover">
+      <% if @player.position == "Team" %>
+        <%= render 'team_stat_table', team: @player %>
+      <% else %>
+        <%= render 'player_stat_table', player: @player %>
+      <% end %>
+    </table>
+  </div>
+</div>
