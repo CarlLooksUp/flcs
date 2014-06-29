@@ -36,6 +36,7 @@ Setup the db
 
 
 Populate this season's data
+(102 and 104 are the id numbers for the 2014 season in Riots API)
 
   rake api:players[102]
   rake api:players[104]
