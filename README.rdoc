@@ -28,22 +28,20 @@ Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
 
 Before doing anything, run
+  createuser -s -r flcs
 
-'''
-createuser -s -r flcs
-'''
 
 Setup the db
-'''
-rake db:setup
-'''
+  rake db:setup
 
-Seed the db
-'''
-rake db:seed
-'''
+
+Populate this season's data
+
+  rake api:players[102]
+  rake api:players[104]
+  rake api:stats[102]
+  rake api:stats[104]
+  rake api:totals
 
 Start the server
-'''
-rails server
-'''
+  rails server
