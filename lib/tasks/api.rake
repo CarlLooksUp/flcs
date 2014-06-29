@@ -57,8 +57,13 @@ namespace :api do
       match = stats.delete("matchId")
       lines = []
       stats.each do |teamId, team_stats|
-        player = Player.find_by riot_id: no_nulls(team_stats["teamId"])
-        line = Statline.find_or_initialize_by(player: player, game: game)
+        #update the team      
+        team = Player.find_or_initialize_by(riot_id: no_nulls(team_stats["teamId"]))
+        team.update(name: team_stats['teamName'], position: 'Team')
+        team.save
+
+        #update the stats
+        line = Statline.find_or_initialize_by(player: team, game: game)
         line.date = date
         line.match = match
         line.win = no_nulls(team_stats["matchVictory"])
@@ -86,7 +91,12 @@ namespace :api do
         opponents[t.player.riot_id] = t.opponent
       end
       stats.each do |playerId, player_stats|
-        player = Player.find_by riot_id: no_nulls(player_stats["playerId"]) 
+        #update the player
+        player = Player.find_or_initialize_by(riot_id: no_nulls(player_stats["playerId"]))
+        player.update(name: player_stats['playerName'], position: player_stats['role'])
+        player.save
+        
+        #update the player stats
         line = Statline.find_or_initialize_by(player: player, game: game)
         line.date = date
         line.match = match
@@ -100,7 +110,9 @@ namespace :api do
         line.quadra_kill = no_nulls(player_stats["quadraKills"])
         line.penta_kill = no_nulls(player_stats["pentaKills"])
         line.points = line.calc_points
-        line.opponent = opponents[line.player.team.riot_id]
+        unless line.player.team.nil?
+          line.opponent = opponents[line.player.team.riot_id]
+        end
         line.save
       end
     end
