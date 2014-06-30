@@ -1,4 +1,7 @@
 require 'open-uri'
+require 'ai4r'
+include Ai4r::Data
+include Ai4r::Clusterers
 
 BASE_URL = "http://na.lolesports.com/api"
 def open_api_as_array(endpoint)
@@ -147,6 +150,45 @@ namespace :api do
       totals.save
     end
   end
+
+  desc "Update player tiers"
+  task :tier => :environment do |t, args|
+    # for each position
+    position_hash = Hash.new{|h, k| h[k] = []}
+    Player.all.collect { |p| position_hash[p.position] << p }
+
+    position_hash.each do |pos, members|
+      # make a data set out of the members
+
+      #the label and the get_player_data functions need to be kept in sync
+      #if you want to consider another value in the data, add a corresponding label
+      labels = ['total_points']
+      def get_player_data (p)
+        player_totals = SeasonTotal.find_by player:p
+        [player_totals.total_points]
+      end
+
+      data = members.map { |p| get_player_data(p) }
+
+      # cluster them into tiers
+      data_set = DataSet.new(:data_items => data, :data_labels => labels)
+      # http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
+      # went with rule of thumb for now
+      num_clusters = Math.sqrt(data.length / 2).floor
+      clusterer = Diana.new.build(data_set, num_clusters)
+
+      # record the results
+      # Currently, tiers are just grouping similar players
+      # without implying any rank - tier 0 may be worst or best or anywhere in between
+      members.each do |p|
+        player_data = get_player_data p
+        tier = clusterer.eval player_data
+        p.update(tier: tier)
+        p.save
+      end
+    end
+  end
+
 
   desc "Identify starters/replacement level"
   task :starters, [:teams] => :environment do |t, args|
