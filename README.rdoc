@@ -44,6 +44,7 @@ Populate this season's data
   rake api:stats[102]
   rake api:stats[104]
   rake api:totals
+  rake api:tier
 
 Start the server
   rails server
