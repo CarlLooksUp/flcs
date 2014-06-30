@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'stats#index'
 
   match 'player/:id/', to: 'stats#player', via: :get
+  match 'player_points_by_game/:id/', to: 'stats#player_points_by_game', via: :get
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
