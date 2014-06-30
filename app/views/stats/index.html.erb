@@ -12,22 +12,13 @@
           <td>Variance (AAD)</td>
         </thead>
         <tbody>
-          <% tier_cutoff = nil %>
-          <% pos.each do |player| %>
-            <% if not player.season_totals[0].nil? and player.season_totals[0].total_points > 50 %>
-              <% points = player.season_totals[0].total_points %>
-              <% if tier_cutoff.nil? or points < tier_cutoff %>
-                <% tier += 1 %>
-                <% tier_cutoff = points - (points * 0.08) %>
-              <% end %>
-              <tr class="tier-<%= tier %>" >
-                <td><%= link_to player.name, 'player/' + player.id.to_s %></td>
-                <td><%= player.season_totals[0].ppg.to_s(:rounded, precision: 2, strip_insignificant_zeros: true) %></td>
-                <td><%= player.season_totals[0].variance.to_s(:rounded, precision: 2, strip_insignificant_zeros: true)%></td>
-              </tr>
-              <% prev_points = points %>
-            <% end %>
-          <% end %>
+	      <% pos.each do |player| %>
+	          <tr class="tier-<%= player.tier %>" >
+	            <td><%= link_to player.name, 'player/' + player.id.to_s %></td>
+	            <td><%= player.season_totals[0].ppg.to_s(:rounded, precision: 2, strip_insignificant_zeros: true) %></td>
+	            <td><%= player.season_totals[0].variance.to_s(:rounded, precision: 2, strip_insignificant_zeros: true)%></td>
+	          </tr>
+	      <% end %>
         </tbody>
       </table>
     </div>
