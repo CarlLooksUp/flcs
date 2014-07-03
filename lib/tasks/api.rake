@@ -182,7 +182,7 @@ namespace :api do
       # order the tiers, so we know which is best
       def get_cluster_avg_points(c)
         total_points_index = c.get_index('total_points')
-        c.data_items.inject(0.0) { |sum, el| sum + el[total_points_index]} / c.data_items.size
+        c.get_mean_or_mode[total_points_index]
       end
       clusterer.clusters.sort! {|x,y| get_cluster_avg_points(y) <=> get_cluster_avg_points(x)}
       
