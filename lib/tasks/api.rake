@@ -184,8 +184,9 @@ namespace :api do
         total_points_index = c.get_index('total_points')
         c.get_mean_or_mode[total_points_index]
       end
+
       clusterer.clusters.sort! {|x,y| get_cluster_avg_points(y) <=> get_cluster_avg_points(x)}
-      
+
       # record the results
       members.each do |p|
         player_data = get_player_data p
