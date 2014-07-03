@@ -162,10 +162,11 @@ namespace :api do
 
       #the label and the get_player_data functions need to be kept in sync
       #if you want to consider another value in the data, add a corresponding label
-      labels = ['total_points']
+      #throw all the data we have at it
+      labels = ['total_kills', 'total_deaths', 'total_assits', 'total_cs', 'total_ten_ka', 'total_win', 'total_baron', 'total_dragon', 'total_first_blood', 'total_tower', 'total_time', 'total_points']
       def get_player_data (p)
         player_totals = SeasonTotal.find_by player:p
-        [player_totals.total_points]
+        [player_totals.total_kills, player_totals.total_deaths, player_totals.total_assists, player_totals.total_cs, player_totals.total_ten_ka, player_totals.total_win, player_totals.total_baron, player_totals.total_dragon, player_totals.total_first_blood, player_totals.total_tower, player_totals.total_time, player_totals.total_points]
       end
 
       data = members.map { |p| get_player_data(p) }
@@ -174,7 +175,8 @@ namespace :api do
       data_set = DataSet.new(:data_items => data, :data_labels => labels)
       # http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
       # went with rule of thumb for now
-      num_clusters = Math.sqrt(data.length / 2).floor
+      #num_clusters = Math.sqrt(data.length / 2).floor
+      num_clusters = 8 #the number of clusters Carl set before
       clusterer = Diana.new.build(data_set, num_clusters)
 
       # record the results
@@ -182,7 +184,8 @@ namespace :api do
       # without implying any rank - tier 0 may be worst or best or anywhere in between
       members.each do |p|
         player_data = get_player_data p
-        tier = clusterer.eval player_data
+        #clusters are 0 based, we want tiers to be 1 based
+        tier = clusterer.eval(player_data) + 1
         p.update(tier: tier)
         p.save
       end
