@@ -179,9 +179,14 @@ namespace :api do
       num_clusters = 8 #the number of clusters Carl set before
       clusterer = Diana.new.build(data_set, num_clusters)
 
+      # order the tiers, so we know which is best
+      def get_cluster_avg_points(c)
+        total_points_index = c.get_index('total_points')
+        c.data_items.inject(0.0) { |sum, el| sum + el[total_points_index]} / c.data_items.size
+      end
+      clusterer.clusters.sort! {|x,y| get_cluster_avg_points(y) <=> get_cluster_avg_points(x)}
+      
       # record the results
-      # Currently, tiers are just grouping similar players
-      # without implying any rank - tier 0 may be worst or best or anywhere in between
       members.each do |p|
         player_data = get_player_data p
         #clusters are 0 based, we want tiers to be 1 based
