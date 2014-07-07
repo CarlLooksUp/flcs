@@ -27,6 +27,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    ai4r (1.13)
     annotate (2.6.1)
       activerecord (>= 2.3.0)
       rake (>= 0.8.7)
@@ -122,6 +123,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ai4r
   annotate
   bootstrap-sass
   coffee-rails (~> 4.0.0)

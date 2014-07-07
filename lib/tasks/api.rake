@@ -1,4 +1,7 @@
 require 'open-uri'
+require 'ai4r'
+include Ai4r::Data
+include Ai4r::Clusterers
 
 BASE_URL = "http://na.lolesports.com/api"
 def open_api_as_array(endpoint)
@@ -147,6 +150,54 @@ namespace :api do
       totals.save
     end
   end
+
+  desc "Update player tiers"
+  task :tier => :environment do |t, args|
+    # for each position
+    position_hash = Hash.new{|h, k| h[k] = []}
+    Player.all.collect { |p| position_hash[p.position] << p }
+
+    position_hash.each do |pos, members|
+      # make a data set out of the members
+
+      #the label and the get_player_data functions need to be kept in sync
+      #if you want to consider another value in the data, add a corresponding label
+      #throw all the data we have at it
+      labels = ['total_kills', 'total_deaths', 'total_assits', 'total_cs', 'total_ten_ka', 'total_win', 'total_baron', 'total_dragon', 'total_first_blood', 'total_tower', 'total_time', 'total_points']
+      def get_player_data (p)
+        player_totals = SeasonTotal.find_by player:p
+        [player_totals.total_kills, player_totals.total_deaths, player_totals.total_assists, player_totals.total_cs, player_totals.total_ten_ka, player_totals.total_win, player_totals.total_baron, player_totals.total_dragon, player_totals.total_first_blood, player_totals.total_tower, player_totals.total_time, player_totals.total_points]
+      end
+
+      data = members.map { |p| get_player_data(p) }
+
+      # cluster them into tiers
+      data_set = DataSet.new(:data_items => data, :data_labels => labels)
+      # http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
+      # went with rule of thumb for now
+      #num_clusters = Math.sqrt(data.length / 2).floor
+      num_clusters = 8 #the number of clusters Carl set before
+      clusterer = Diana.new.build(data_set, num_clusters)
+
+      # order the tiers, so we know which is best
+      def get_cluster_avg_points(c)
+        total_points_index = c.get_index('total_points')
+        c.get_mean_or_mode[total_points_index]
+      end
+
+      clusterer.clusters.sort! {|x,y| get_cluster_avg_points(y) <=> get_cluster_avg_points(x)}
+
+      # record the results
+      members.each do |p|
+        player_data = get_player_data p
+        #clusters are 0 based, we want tiers to be 1 based
+        tier = clusterer.eval(player_data) + 1
+        p.update(tier: tier)
+        p.save
+      end
+    end
+  end
+
 
   desc "Identify starters/replacement level"
   task :starters, [:teams] => :environment do |t, args|
