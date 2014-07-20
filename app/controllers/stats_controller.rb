@@ -21,7 +21,7 @@ class StatsController < ApplicationController
   #JSON Endpoints for graph data
   def player_points_by_game
     player = Player.find(params[:id])
-    stats = Statline.where player: player
+    stats = Statline.where(player: player).order(date: :asc)
     data = Array.new
     labels = Array.new
     stats.each do |line|

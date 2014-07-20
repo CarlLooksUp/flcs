@@ -11,7 +11,7 @@
   <td>Points</td>
 </thead>
 <tbody>
-  <% player.statlines.each do |line| %>
+  <% player.statlines.order(date: :asc).each do |line| %>
     <tr>
       <td><%= line.date.to_s(:date) %></td>
       <td><%= line.opponent.name %></td>
