@@ -23,9 +23,9 @@ def variance(data, mean)
   return 0 if data.count == 0
   total_deviation = 0.0
   data.each do |datum|
-    total_deviation += (datum - mean).abs 
+    total_deviation += (datum - mean).abs
   end
-  total_deviation / data.count  
+  total_deviation / data.count
 end
 
 namespace :api do
@@ -52,7 +52,7 @@ namespace :api do
   task :stats, [:season_id] => :environment do |t, args|
     #open up the season stat json
     stat_library = open_api_as_array("/gameStatsFantasy.json?tournamentId=#{args.season_id}")
-    
+
     #Compile all team statlines
     stat_library['teamStats'].each do |gameId, stats|
       game = gameId.split("game")[1]
@@ -60,7 +60,7 @@ namespace :api do
       match = stats.delete("matchId")
       lines = []
       stats.each do |teamId, team_stats|
-        #update the team      
+        #update the team
         team = Player.find_or_initialize_by(riot_id: no_nulls(team_stats["teamId"]))
         team.update(name: team_stats['teamName'], position: 'Team')
         team.save
@@ -98,7 +98,7 @@ namespace :api do
         player = Player.find_or_initialize_by(riot_id: no_nulls(player_stats["playerId"]))
         player.update(name: player_stats['playerName'], position: player_stats['role'])
         player.save
-        
+
         #update the player stats
         line = Statline.find_or_initialize_by(player: player, game: game)
         line.date = date
@@ -129,7 +129,7 @@ namespace :api do
 
       #sum up statline data for each column
       #player scoring stats
-      totals.total_kills = player_stats.sum(:kills) 
+      totals.total_kills = player_stats.sum(:kills)
       totals.total_deaths = player_stats.sum(:deaths)
       totals.total_assists = player_stats.sum(:assists)
       totals.total_cs = player_stats.sum(:cs)
@@ -207,7 +207,7 @@ namespace :api do
     players = Player.all.includes(:season_totals).to_a
     teams = (0 .. (args.teams.to_i - 1)).to_a
     players.sort! do |x, y|
-      xcomp = x.season_totals[0].nil? ? 0 : x.season_totals[0].total_points 
+      xcomp = x.season_totals[0].nil? ? 0 : x.season_totals[0].total_points
       ycomp = y.season_totals[0].nil? ? 0 : y.season_totals[0].total_points
       ycomp <=> xcomp
     end
@@ -239,10 +239,10 @@ namespace :api do
     end
 
     #flex backups
-    (teams * 3).each do |idx| 
+    (teams * 3).each do |idx|
       player = players.delete_at(0)
       backups[player.position] << positions[player.position].delete(player)
-    end 
+    end
 
     positions.each do |label, array|
       puts "--" + label + "--"
@@ -256,7 +256,7 @@ namespace :api do
       end
     end
   end
-  
+
   desc "Create seed file from db contents"
   task :build_seed => :environment do |t, args|
     #TODO

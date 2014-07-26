@@ -5,8 +5,8 @@ class StatsController < ApplicationController
       @positions[player.position] << player
     end
     @positions.each do |label, array|
-      array.sort! do |x, y| 
-        xcomp = x.season_totals[0].nil? ? 0 : x.season_totals[0].total_points 
+      array.sort! do |x, y|
+        xcomp = x.season_totals[0].nil? ? 0 : x.season_totals[0].total_points
         ycomp = y.season_totals[0].nil? ? 0 : y.season_totals[0].total_points
         ycomp <=> xcomp
       end
@@ -14,7 +14,7 @@ class StatsController < ApplicationController
   end
 
   def player
-    @player = Player.find(params[:id])   
+    @player = Player.find(params[:id])
     @recent_comment = @player.player_comments.order(created_at: :asc).last
   end
 
@@ -26,12 +26,11 @@ class StatsController < ApplicationController
     data = Array.new
     labels = Array.new
     stats.each do |line|
-      labels << line.opponent.name 
+      labels << line.opponent.name
       data << line.points
     end
     json = { data: data, labels: labels }
 
     render json: json
   end
-  
 end
