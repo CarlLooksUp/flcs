@@ -30,3 +30,27 @@
     background-color: #AA3939;
 }
 
+.name-col {
+    width: 140px;
+}
+
+.ppg-col {
+    width: 90px;
+}
+
+.variance-col {
+    width: 110px;
+}
+
+.tier-col {
+    width: 35px;
+}
+
+.note-link-col {
+    width: 20px;
+}
+
+td.ppg-col, td.variance-col, td.tier-col {
+    text-align: right;
+    padding-right: 5px;
+}

@@ -15,6 +15,7 @@ class StatsController < ApplicationController
 
   def player
     @player = Player.find(params[:id])   
+    @recent_comment = @player.player_comments.order(created_at: :asc).last
   end
 
 

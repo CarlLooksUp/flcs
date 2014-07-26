@@ -15,4 +15,5 @@ class Player < ActiveRecord::Base
   belongs_to :team, class_name: :Player
   has_many :season_totals
   has_many :statlines
+  has_many :player_comments
 end

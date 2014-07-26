@@ -126,7 +126,9 @@ namespace :api do
     Player.all.each do |player|
       totals = SeasonTotal.find_or_initialize_by(player: player)
       player_stats = Statline.where(player: player)
-      #player
+
+      #sum up statline data for each column
+      #player scoring stats
       totals.total_kills = player_stats.sum(:kills) 
       totals.total_deaths = player_stats.sum(:deaths)
       totals.total_assists = player_stats.sum(:assists)
@@ -136,13 +138,14 @@ namespace :api do
       totals.total_penta_kill = player_stats.sum(:penta_kill)
       totals.total_ten_ka = player_stats.sum(:ten_ka)
 
-      #team
+      #team scoring stats
       totals.total_win = player_stats.sum(:win)
       totals.total_baron = player_stats.sum(:baron)
       totals.total_dragon = player_stats.sum(:dragon)
       totals.total_first_blood = player_stats.sum(:first_blood)
       totals.total_tower = player_stats.sum(:tower)
 
+      #both
       totals.total_time = player_stats.sum(:time)
       totals.total_points = player_stats.sum(:points)
       totals.ppg = totals.total_points / player_stats.count
