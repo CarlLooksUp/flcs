@@ -23,9 +23,12 @@ $(document).on("page:change", function() {
           ]
         };
 
-        var options = { bezierCurve: false };
+        var options = { bezierCurve: false, animation: false };
         var lineChart = new Chart(context).Line(data, options);
       }
     });
   }
+
+  $('.collapse-link').on('click', function (e) { e.preventDefault(); });
+  $('.collapse').collapse({ toggle: false });
 });

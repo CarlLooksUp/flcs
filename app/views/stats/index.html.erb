@@ -7,19 +7,34 @@
       <h3><%= label %></h3>
       <table class="table table-hover ">
         <thead>
-          <td>Name</td>
-          <td>Points / gm</td>
-          <td>Variance (AAD)</td>
-          <td>Tier</td>
+          <td class="name-col">Name</td>
+          <td class="ppg-col">Points / gm</td>
+          <td class="variance-col">Variance (AAD)</td>
+          <td class="tier-col">Tier</td>
+          <td class="note-icon note-link-col"></td>
         </thead>
         <tbody>
 	      <% pos.each do |player| %>
 	          <tr class="tier-<%= player.tier %>" >
-	            <td><%= link_to player.name, 'player/' + player.id.to_s %></td>
-	            <td><%= player.season_totals[0].ppg.to_s(:rounded, precision: 2, strip_insignificant_zeros: true) %></td>
-	            <td><%= player.season_totals[0].variance.to_s(:rounded, precision: 2, strip_insignificant_zeros: true)%></td>
-	            <td><%= player.tier%></td>
+	            <td class="name-col"><%= link_to player.name, 'player/' + player.id.to_s %></td>
+	            <td class="ppg-col"><%= player.season_totals[0].ppg.to_s(:rounded, precision: 2, strip_insignificant_zeros: true) %></td>
+	            <td class="variance-col"><%= player.season_totals[0].variance.to_s(:rounded, precision: 2, strip_insignificant_zeros: true)%></td>
+	            <td class="tier-col"><%= player.tier %></td>
+              <td class="note-icon note-link-col">
+                <% unless player.player_comments.first.nil? %>
+                  <%= link_to "#", data: { toggle: 'collapse', target: "#notePlayer#{player.id}", no_turbolink: true}, class: "collapse-link"  do %>
+                    <span class="glyphicon glyphicon-comment"></span></a>
+                  <% end %>
+                <% end %>
+              </td>
 	          </tr>
+            <tr class="collapse" id="<%= "notePlayer#{player.id}" %>">
+              <td class="player-comment" colspan="5">
+                <% unless player.player_comments.first.nil? %>
+                  <%= player.player_comments.order(created_at: :asc).last.comment %>
+                <% end %>
+              </td>
+            </tr>
 	      <% end %>
         </tbody>
       </table>
