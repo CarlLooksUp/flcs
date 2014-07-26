@@ -163,10 +163,10 @@ namespace :api do
       #the label and the get_player_data functions need to be kept in sync
       #if you want to consider another value in the data, add a corresponding label
       #throw all the data we have at it
-      labels = ['total_kills', 'total_deaths', 'total_assits', 'total_cs', 'total_ten_ka', 'total_win', 'total_baron', 'total_dragon', 'total_first_blood', 'total_tower', 'total_time', 'total_points']
+      labels = ['total_points']
       def get_player_data (p)
         player_totals = SeasonTotal.find_by player:p
-        [player_totals.total_kills, player_totals.total_deaths, player_totals.total_assists, player_totals.total_cs, player_totals.total_ten_ka, player_totals.total_win, player_totals.total_baron, player_totals.total_dragon, player_totals.total_first_blood, player_totals.total_tower, player_totals.total_time, player_totals.total_points]
+        [player_totals.total_points]
       end
 
       data = members.map { |p| get_player_data(p) }
