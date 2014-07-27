@@ -1,0 +1,20 @@
+<h1>Compare Players</h1>
+
+<div class="row">
+  <div id="compareChartContainer">
+    <canvas id="compareChart" width="1000" height="600" data-labels="<%= @weeks %>"></canvas>
+  </div>
+</div>
+
+<div class="row">
+  <div id="playerSelect" class="form-group">
+    <% @players.each do |player| %>
+      <div class="col-md-1">
+        <%= label_tag player.name %>
+      </div>
+      <div class="col-md-1">
+        <%= check_box_tag player.name, player.id, false, class: 'form-control' %>
+      </div>
+    <% end %>
+  </div>
+</div>

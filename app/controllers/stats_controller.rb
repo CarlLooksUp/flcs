@@ -18,6 +18,11 @@ class StatsController < ApplicationController
     @recent_comment = @player.player_comments.order(created_at: :asc).last
   end
 
+  def compare
+    @players = Player.all
+    @weeks = (1..total_weeks).to_a
+  end
+
 
   #JSON Endpoints for graph data
   def player_points_by_game
@@ -29,8 +34,36 @@ class StatsController < ApplicationController
       labels << line.opponent.name
       data << line.points
     end
-    json = { data: data, labels: labels }
+    json = { name: player.name, data: data, labels: labels }
 
     render json: json
   end
+
+  def player_points_by_week
+    player = Player.find(params[:id])
+    stats = Statline.where(player: player).order(date: :asc)
+    data = Array.new(total_weeks, 0)
+    stats.each do |line|
+      data[week(line.date)] += line.points
+    end
+
+    json = { name: player.name, data: data }
+    render json: json
+  end
+
+  private
+    def total_weeks
+      week(DateTime.now)
+    end
+
+    def first_day
+      first_day = Rails.cache.fetch('first_day') {
+        Statline.order(date: :asc).first.date
+      }
+    end
+
+    #zero indexed
+    def week(date)
+      (date.to_date - first_day.to_date).to_i / 7
+    end
 end
